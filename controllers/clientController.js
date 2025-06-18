@@ -55,20 +55,21 @@ const addClient = async (req, res) => {
   }
 };
 
-const addClientToCase = async () => {
+const addClientToCase = async (req, res) => {
   try {
-    const { caseId, clientId } = req.body;
+    const { caseId, clientIds } = req.body;
+    console.log(clientIds);
+    const mappings = await Mapping.findOneAndUpdate(
+      { case: caseId },
+      {
+        client: clientIds,
+      }
+    );
 
-    const mapping = await Mapping.create({
-      case: caseId,
-      client: clientId,
-      Advocate: req.user.user._id,
-    });
-
-    res.status(201).json(mapping);
+    res.status(201).json(mappings);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Error adding client to case", error });
+    console.error(error);
+    res.status(500).json({ message: "Error adding client(s) to case", error });
   }
 };
 
