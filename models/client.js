@@ -10,7 +10,7 @@ const clientSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "Email is required"],
-      unique: true,
+      // unique: true,
       lowercase: true,
       trim: true,
     },
@@ -20,8 +20,12 @@ const clientSchema = new mongoose.Schema(
     },
     modeOfCommunication: {
       type: String,
-      enum: ["Email", "Phone"],
+      enum: ["Email", "SMS", "Whatsapp"],
       default: "Email", // Optional: Set a default
+    },
+    firmOwner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FirmOwner", // Assuming you have a FirmOwner model
     },
   },
   {
@@ -29,4 +33,6 @@ const clientSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Client", clientSchema);
+const Client = mongoose.model("Client", clientSchema);
+
+module.exports = Client;

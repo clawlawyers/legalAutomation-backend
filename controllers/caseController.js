@@ -765,7 +765,7 @@ const addCaseToDB = async (req, res) => {
       getCase = caseData;
       // getCase = await processCaseDataDC(caseData);
     } else if (caseType === "HC") {
-      getCase = caseData.case;
+      getCase = caseData;
       // getCase = await processCaseDataHC(caseData.case);
     }
 
