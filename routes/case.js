@@ -17,6 +17,7 @@ const {
   getCaseType,
   getBenchCode,
   caseFindByPrompt,
+  caseFindByPromptSummary,
 } = require("../controllers/caseController");
 const router = express.Router();
 
@@ -67,5 +68,7 @@ router.post("/getBanchCode", requireAuth, getBenchCode);
 //case search
 
 router.post("/caseSearch", requireAuth, caseFindByPrompt);
+
+router.post("/caseSearch/summary", requireAuth, caseFindByPromptSummary);
 
 module.exports = router;
