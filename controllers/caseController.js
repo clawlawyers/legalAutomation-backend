@@ -927,6 +927,66 @@ const getBenchCode = async (req, res) => {
   }
 };
 
+const getCasesByPrompt = async (payload) => {
+  try {
+    getCases = await fetch("http://20.193.139.213:8000/get_cases", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!getCases.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await getCases.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const caseFindByPrompt = async (req, res) => {
+  try {
+    const payload = req.body;
+    const data = await getCasesByPrompt(payload);
+    res.status(200).json({ data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const GetCaseFindByPromptSummary = async (payload) => {
+  try {
+    getCases = await fetch(" http://20.193.139.213:8000/summarize_by_case", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!getCases.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await getCases.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const caseFindByPromptSummary = async (req, res) => {
+  try {
+    const payload = req.body;
+    const data = await GetCaseFindByPromptSummary(payload);
+    res.status(200).json({ data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   caseFindByCNR,
   caseFindByFilingNum,
@@ -943,4 +1003,6 @@ module.exports = {
   getCasesByUser,
   getCaseType,
   getBenchCode,
+  caseFindByPrompt,
+  caseFindByPromptSummary,
 };
