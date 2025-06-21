@@ -94,6 +94,7 @@ const getCaseByFilingNum_HC = async (filingData) => {
       throw new Error("Network response was not ok");
     }
     const data = await getCase.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -105,12 +106,15 @@ const caseFindByFilingNum = async (req, res) => {
   try {
     const { caseType } = req.body;
     const filingData = req.body.filingData;
+    console.log(req.body);
+    console.log(req.body.filingData);
     let caseData;
     if (caseType == "DC") {
       caseData = await getCaseByFilingNum_DC(filingData);
     } else if (caseType === "HC") {
       caseData = await getCaseByFilingNum_HC(filingData);
     }
+    console.log(caseData);
     if (!caseData) {
       return res.status(404).json({ message: "Case not found" });
     }
@@ -205,6 +209,7 @@ const getCaseByCaseNum_DC = async (caseNumData) => {
       throw new Error("Network response was not ok");
     }
     const data = await getCase.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -599,10 +604,13 @@ const caseFindByAdvocateNameBarCode_DC = async (payload) => {
         body: JSON.stringify(payload),
       }
     );
+    // console.log(getCase);
     if (!getCase.ok) {
       throw new Error("Network response was not ok");
     }
     const data = await getCase.json();
+    // console.log(data);
+
     return data;
   } catch (error) {
     console.log(error);
@@ -635,12 +643,13 @@ const caseFindByAdvocateNameBarCode_DC = async (payload) => {
 
 const caseFindByAdvocateNameBarCode = async (req, res) => {
   try {
-    const { caseType } = req.body;
-    const advocateNameData = req.body.advocateNameData;
+    const { caseType } = req?.body;
+    const advocateNameData = req?.body?.advocateNameData;
     let caseData;
     if (caseType == "DC") {
       caseData = await caseFindByAdvocateNameBarCode_DC(advocateNameData);
     }
+
     //  else if (caseType === "HC") {
     //   caseData = await caseFindByAdvocateNameBarCode_HC(advocateNameData);
     // }
@@ -845,6 +854,79 @@ const getCasesByUser = async (req, res) => {
   }
 };
 
+const fetchCaseType = async (body) => {
+  try {
+    const respo = await fetch(
+      "https://6yx7p9e8eb.execute-api.ap-south-1.amazonaws.com/case_type_list_ecourts/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    console.log(respo);
+
+    if (!respo.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await respo.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getCaseType = async (req, res) => {
+  try {
+    const body = req.body;
+    console.log(body);
+    const data = await fetchCaseType(body);
+    res.status(200).json({ data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const fetchBanchCode = async (body) => {
+  try {
+    const respo = await fetch(
+      "https://nph91ovhql.execute-api.ap-south-1.amazonaws.com/bench_code/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!respo.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await respo.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getBenchCode = async (req, res) => {
+  try {
+    const body = req.body;
+    console.log(body);
+    const data = await fetchBanchCode(body);
+    res.status(200).json({ data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   caseFindByCNR,
   caseFindByFilingNum,
@@ -859,4 +941,6 @@ module.exports = {
   caseFindByAdvocateNameBarCodeDetail,
   addCaseToDB,
   getCasesByUser,
+  getCaseType,
+  getBenchCode,
 };

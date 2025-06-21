@@ -56,7 +56,22 @@ const caseSchema = new mongoose.Schema({
     // required: true,
     default: "",
   },
+
   district: {
+    // DC HC
+    type: String,
+    // required: true,
+    default: "",
+  },
+
+  stateCode: {
+    // DC HC
+    type: String,
+    // required: true,
+    default: "",
+  },
+
+  benchCode: {
     // DC HC
     type: String,
     // required: true,

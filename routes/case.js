@@ -14,6 +14,8 @@ const {
   caseFindByAdvocateNameBarCodeDetail,
   addCaseToDB,
   getCasesByUser,
+  getCaseType,
+  getBenchCode,
 } = require("../controllers/caseController");
 const router = express.Router();
 
@@ -53,5 +55,12 @@ router.post("/addCase/db", requireAuth, addCaseToDB);
 
 // Get Cases By User
 router.get("/getCases/user", requireAuth, getCasesByUser);
+
+// get case Type
+router.post("/getCaseType", requireAuth, getCaseType);
+
+// get bench code
+
+router.post("/getBanchCode", requireAuth, getBenchCode);
 
 module.exports = router;
