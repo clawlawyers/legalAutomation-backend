@@ -987,6 +987,14 @@ const caseFindByPromptSummary = async (req, res) => {
   }
 };
 
+const getAllFirmCases = async (req, res) => {
+  try {
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   caseFindByCNR,
   caseFindByFilingNum,
@@ -1005,4 +1013,5 @@ module.exports = {
   getBenchCode,
   caseFindByPrompt,
   caseFindByPromptSummary,
+  getAllFirmCases,
 };

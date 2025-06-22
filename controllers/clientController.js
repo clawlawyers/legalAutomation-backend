@@ -73,8 +73,56 @@ const addClientToCase = async (req, res) => {
   }
 };
 
+const getAllClientCases = async (req, res) => {
+  try {
+    const clientCases = await Mapping.find({ client: req.params.clientId })
+      .populate("case")
+      .exec();
+    res.status(200).json(clientCases);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding client(s) to case", error });
+  }
+};
+
+const editClient = async (req, res) => {
+  try {
+    const { _id, clientName, email, phone, modeOfCommunication } = req.body;
+    const updatedClient = await Client.findByIdAndUpdate(
+      _id,
+      {
+        clientName,
+        email,
+        phone,
+        modeOfCommunication,
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedClient);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding client(s) to case", error });
+  }
+};
+
+const deleteClient = async (req, res) => {
+  try {
+    const _id = req.params.clientId;
+    const deletedClient = await Client.findByIdAndDelete(_id);
+    // Step 2: Pull the client ID from all Mapping.client arrays
+    await Mapping.updateMany({ client: _id }, { $pull: { client: _id } });
+    res.status(200).json(deletedClient);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding client(s) to case", error });
+  }
+};
+
 module.exports = {
   getAllClients,
   addClient,
   addClientToCase,
+  getAllClientCases,
+  editClient,
+  deleteClient,
 };

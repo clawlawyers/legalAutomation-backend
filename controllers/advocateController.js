@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const Advocate = require("../models/advocate");
+const Mapping = require("../models/mapping");
 
 function generatePassword(length = 12, useSpecialChars = true) {
   const lower = "abcdefghijklmnopqrstuvwxyz";
@@ -70,4 +71,66 @@ const addAdvocate = async (req, res) => {
   }
 };
 
-module.exports = { addAdvocate };
+const getAllAdvocates = async (req, res) => {
+  try {
+    const advocates = await Advocate.find({ FirmOwner: req.user.user._id });
+    res.status(200).json(advocates);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getAdvocate = async (req, res) => {
+  try {
+    const advocate = await Advocate.findById(req.params.id);
+    if (!advocate) {
+      return res.status(404).json({ message: "Advocate not found" });
+    }
+    res.status(200).json(advocate);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const editAdvocate = async (req, res) => {
+  try {
+    const { name, phoneNumber, email, advocateBarCode, courtOfPractice } =
+      req.body;
+    const advocate = await Advocate.findById(req.params.id);
+    if (!advocate) {
+      return res.status(404).json({ message: "Advocate not found" });
+    }
+    advocate.name = name;
+    advocate.phoneNumber = phoneNumber;
+    advocate.email = email;
+    advocate.advocateBarCode = advocateBarCode;
+    advocate.courtOfPractice = courtOfPractice;
+    await advocate.save();
+    res.status(200).json({ message: "Advocate updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getAllAdvocatesCases = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const advocates = await Mapping.find({ Advocate: id }).populate("case");
+    const cases = advocates.map((a) => a.case);
+    res.status(200).json(cases);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = {
+  addAdvocate,
+  getAllAdvocates,
+  getAdvocate,
+  editAdvocate,
+  getAllAdvocatesCases,
+};
