@@ -19,6 +19,7 @@ const {
   caseFindByPrompt,
   caseFindByPromptSummary,
   getAllFirmCases,
+  getEcourtCauseList,
 } = require("../controllers/caseController");
 const router = express.Router();
 
@@ -75,5 +76,9 @@ router.post("/caseSearch/summary", caseFindByPromptSummary);
 // getAll Case From Firm
 
 router.get("/getAllFirmCases", requireAuth, getAllFirmCases);
+
+// get ecourt cause list
+
+router.post("/ecourt-causeList", requireAuth, getEcourtCauseList);
 
 module.exports = router;

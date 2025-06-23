@@ -989,6 +989,52 @@ const caseFindByPromptSummary = async (req, res) => {
 
 const getAllFirmCases = async (req, res) => {
   try {
+    const mappings = await Mapping.find()
+      .populate({
+        path: "Advocate",
+        match: { FirmOwner: req.user.user._id },
+      })
+      .populate("case")
+      .populate("client");
+
+    const cases = mappings.map((a) => a.case);
+
+    res.status(200).json(cases);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const fetchEcourtCases = async (body) => {
+  try {
+    const respo = await fetch(
+      "https://8evpnei35h.execute-api.ap-south-1.amazonaws.com/court_num_ecourt_use_in_causelist",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (!respo.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await respo.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getEcourtCauseList = async (req, res) => {
+  try {
+    const body = req.body;
+    console.log(body);
+    const data = await fetchEcourtCases(body);
+    res.status(200).json({ data });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
@@ -1014,4 +1060,5 @@ module.exports = {
   caseFindByPrompt,
   caseFindByPromptSummary,
   getAllFirmCases,
+  getEcourtCauseList,
 };
