@@ -25,12 +25,12 @@ const getCauseList_DC = async (payload) => {
 const getCauseList = async (req, res) => {
   try {
     const { caseType } = req.body;
-    const caseNumData = req.body.caseNumData;
-    let causeListData;
+    const causeListData = req.body.causeListData;
+    let causeList;
     if (caseType == "DC") {
-      causeListData = await getCauseList_DC(caseNumData);
+      causeList = await getCauseList_DC(causeListData);
     }
-    res.status(200).json({ causeListData });
+    res.status(200).json({ causeList });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

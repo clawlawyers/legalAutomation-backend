@@ -24,7 +24,7 @@ const {
 const router = express.Router();
 
 // Find Case by CRN number
-router.post("/caseFind/crn", requireAuth, caseFindByCNR);
+router.post("/caseFind/crn", caseFindByCNR);
 
 // Find case by Filing Number
 router.post("/caseFind/filingNum", caseFindByFilingNum);

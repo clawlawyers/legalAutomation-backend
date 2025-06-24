@@ -26,10 +26,13 @@ const getCaseByCNR = async (cnr_number, caseType) => {
       },
       body: JSON.stringify({ cnr_number }),
     });
+    console.log(getCase);
     if (!getCase.ok) {
       throw new Error("Network response was not ok");
     }
+
     const data = await getCase.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);

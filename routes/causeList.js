@@ -5,6 +5,6 @@ const {
   getDeatilsCauseList,
 } = require("../controllers/causeListController");
 
-router.post("/causeList", getCauseList);
-router.post("/causeList/details", getDeatilsCauseList);
+router.post("/list", getCauseList);
+router.post("/list/details", getDeatilsCauseList);
 module.exports = router;
