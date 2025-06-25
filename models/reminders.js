@@ -10,12 +10,21 @@ const reminderSchema = new mongoose.Schema({
     required: true,
     ref: "Case",
   },
+  advocate: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Advocate",
+  },
+  firmOwner: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "FirmOwner",
+  },
   hearingDate: {
     type: Date,
     required: true,
   },
   reminderDuration: {
-    type: Date,
+    type: Number, // Number of days before hearing
     required: true,
   },
   modeOfReminder: {
@@ -24,3 +33,6 @@ const reminderSchema = new mongoose.Schema({
     enum: ["Email", "SMS", "Whatsapp"],
   },
 });
+
+const reminder = mongoose.model("Reminder", reminderSchema);
+module.exports = reminder;

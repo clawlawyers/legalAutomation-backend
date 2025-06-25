@@ -347,9 +347,26 @@ function processCaseDataHC(rawCaseData) {
   };
 }
 
+const parseDateString = (dateStr) => {
+  dateStr = "23rd June 2025";
+  const cleaned = dateStr.replace(/(\d+)(st|nd|rd|th)/, "$1"); // "23 June 2025"
+  const parts = cleaned.split(" "); // ["23", "June", "2025"]
+
+  if (parts.length !== 3) return new Date(); // fallback
+
+  const day = parseInt(parts[0], 10);
+  const month = new Date(Date.parse(parts[1] + " 1, 2020")).getMonth(); // Convert "June" to 5
+  const year = parseInt(parts[2], 10);
+
+  const finalDate = new Date(year, month, day);
+
+  return isNaN(finalDate.getTime()) ? new Date() : finalDate;
+};
+
 module.exports = {
   parseCaseDetailsDC,
   parseHighCourtCaseDetails,
   processCaseDataDC,
   processCaseDataHC,
+  parseDateString,
 };
