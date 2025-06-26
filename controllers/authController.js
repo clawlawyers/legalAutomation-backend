@@ -51,6 +51,7 @@ const signup = async (req, res) => {
       phoneNumber,
       advocateBarCode,
       courtOfPractice,
+      state,
     } = req.body;
 
     if (
@@ -59,7 +60,8 @@ const signup = async (req, res) => {
       !password ||
       !phoneNumber ||
       !advocateBarCode ||
-      !courtOfPractice
+      !courtOfPractice ||
+      !state
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -79,6 +81,7 @@ const signup = async (req, res) => {
       phoneNumber,
       advocateBarCode,
       courtOfPractice,
+      state,
     });
 
     await newFirmOwner.save();

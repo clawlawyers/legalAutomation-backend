@@ -24,6 +24,10 @@ const firmOwnerSchema = new Schema(
       type: String,
       required: true,
     },
+    state: {
+      type: String,
+      required: true,
+    },
     courtOfPractice: {
       type: String,
       required: true,

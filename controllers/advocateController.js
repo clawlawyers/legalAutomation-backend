@@ -27,14 +27,21 @@ const addAdvocate = async (req, res) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
   try {
-    const { name, phoneNumber, email, advocateBarCode, courtOfPractice } =
-      req.body;
+    const {
+      name,
+      phoneNumber,
+      email,
+      advocateBarCode,
+      courtOfPractice,
+      state,
+    } = req.body;
     if (
       !name ||
       !phoneNumber ||
       !email ||
       !advocateBarCode ||
-      !courtOfPractice
+      !courtOfPractice ||
+      !state
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -51,6 +58,7 @@ const addAdvocate = async (req, res) => {
       courtOfPractice,
       FirmOwner: req.user.user._id,
       password: hashedPassword,
+      state,
     });
     await advocate.save();
 
@@ -96,8 +104,14 @@ const getAdvocate = async (req, res) => {
 
 const editAdvocate = async (req, res) => {
   try {
-    const { name, phoneNumber, email, advocateBarCode, courtOfPractice } =
-      req.body;
+    const {
+      name,
+      phoneNumber,
+      email,
+      advocateBarCode,
+      courtOfPractice,
+      state,
+    } = req.body;
     const advocate = await Advocate.findById(req.params.id);
     if (!advocate) {
       return res.status(404).json({ message: "Advocate not found" });
@@ -107,6 +121,7 @@ const editAdvocate = async (req, res) => {
     advocate.email = email;
     advocate.advocateBarCode = advocateBarCode;
     advocate.courtOfPractice = courtOfPractice;
+    advocate.state = state;
     await advocate.save();
     res.status(200).json({ message: "Advocate updated successfully" });
   } catch (error) {

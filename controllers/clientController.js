@@ -180,6 +180,8 @@ const deleteClient = async (req, res) => {
     const deletedClient = await Client.findByIdAndDelete(_id);
     // Step 2: Pull the client ID from all Mapping.client arrays
     await Mapping.updateMany({ client: _id }, { $pull: { client: _id } });
+    // Step 3: Delete all reminders related to the client
+    await Reminder.deleteMany({ client: _id });
     res.status(200).json(deletedClient);
   } catch (error) {
     console.error(error);
