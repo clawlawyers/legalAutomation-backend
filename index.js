@@ -15,7 +15,7 @@ app.use("/api", routes);
 app.post("/api/checkDate", async (req, res) => {
   try {
     function parseNative(dateStr) {
-      const cleaned = dateStr.replace(/(\d+)(st|nd|rd|th)/, "$1");
+      const cleaned = dateStr?.replace(/(\d+)(st|nd|rd|th)/, "$1");
       const date = new Date(cleaned);
       return isNaN(date.getTime()) ? null : date;
     }

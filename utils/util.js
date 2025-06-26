@@ -363,10 +363,50 @@ const parseDateString = (dateStr) => {
   return isNaN(finalDate.getTime()) ? new Date() : finalDate;
 };
 
+async function sendTemplateMessage({ name, sendto, data }) {
+  const form = new FormData();
+
+  // Static fields
+  form.append("authToken", process.env.ELEVENZA_AUTH_TOKEN);
+  form.append("originWebsite", "www.clawlaw.in");
+  form.append("templateName", "case_remainder");
+  form.append("language", "en");
+  form.append("buttonValue", "Yes - https://11za.com\nNo - contactus.html");
+  form.append("isTinyURL", "Yes");
+  form.append("tags", "ABC,DEF");
+
+  // File to send (replace with your actual file path)
+  const filePath = path.join(__dirname, "sample.pdf");
+  form.append("myfile", fs.createReadStream(filePath));
+
+  // Dynamic fields
+  form.append("name", name);
+  form.append("sendto", sendto);
+
+  data.forEach((value, index) => {
+    form.append(`data[${index}]`, value);
+  });
+
+  const response = await axios.post(
+    "https://app.11za.in/apis/template/sendTemplate",
+    form,
+    {
+      headers: {
+        ...form.getHeaders(),
+        Cookie:
+          "connect.sid=s%3ABvtCMgLsiwJQ8V6mOJNkBVgxPJIzwHgH.gET29cYh4C1POJA%2B%2FBg8auyhf4JPG24lz6LaQCvsOxA",
+      },
+    }
+  );
+
+  return response.data;
+}
+
 module.exports = {
   parseCaseDetailsDC,
   parseHighCourtCaseDetails,
   processCaseDataDC,
   processCaseDataHC,
   parseDateString,
+  sendTemplateMessage,
 };

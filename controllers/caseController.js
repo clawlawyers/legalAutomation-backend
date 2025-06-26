@@ -818,10 +818,20 @@ const addCaseToDB = async (req, res) => {
         .json({ message: "Case added successfully", case: getDBCase });
     }
 
-    const mapping = await Mapping.create({
-      case: getDBCase._id,
-      Advocate: req.user.user._id,
-    });
+    let mapping;
+
+    if (req.user.type === "manager") {
+      mapping = await Mapping.create({
+        case: getDBCase._id,
+        FirmOwner: req.user.user._id,
+      });
+    } else {
+      mapping = await Mapping.create({
+        case: getDBCase._id,
+        Advocate: req.user.user._id,
+        FirmOwner: req.user.user.FirmOwner,
+      });
+    }
 
     await mapping.save();
 
@@ -839,9 +849,18 @@ const addCaseToDB = async (req, res) => {
 const getCasesByUser = async (req, res) => {
   try {
     const userId = req.user.user._id;
-    const cases = await Mapping.find({ Advocate: userId })
-      .populate("case")
-      .exec();
+    let cases;
+    if (req.user.type === "manager") {
+      cases = await Mapping.find({ FirmOwner: userId })
+        .populate("case")
+        .populate("client")
+        .exec();
+    } else {
+      cases = await Mapping.find({ Advocate: userId })
+        .populate("case")
+        .populate("client")
+        .exec();
+    }
 
     console.log(cases);
     if (!cases || cases.length === 0) {
@@ -990,24 +1009,24 @@ const caseFindByPromptSummary = async (req, res) => {
   }
 };
 
-const getAllFirmCases = async (req, res) => {
-  try {
-    const mappings = await Mapping.find()
-      .populate({
-        path: "Advocate",
-        match: { FirmOwner: req.user.user._id },
-      })
-      .populate("case")
-      .populate("client");
+// const getAllFirmCases = async (req, res) => {
+//   try {
+//     const mappings = await Mapping.find()
+//       .populate({
+//         path: "Advocate",
+//         match: { FirmOwner: req.user.user._id },
+//       })
+//       .populate("case")
+//       .populate("client");
 
-    const cases = mappings.map((a) => a.case);
+//     const cases = mappings.map((a) => a.case);
 
-    res.status(200).json(cases);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+//     res.status(200).json(cases);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 
 const fetchEcourtCases = async (body) => {
   try {
@@ -1062,6 +1081,6 @@ module.exports = {
   getBenchCode,
   caseFindByPrompt,
   caseFindByPromptSummary,
-  getAllFirmCases,
+  // getAllFirmCases,
   getEcourtCauseList,
 };

@@ -75,7 +75,7 @@ router.post("/caseSearch/summary", caseFindByPromptSummary);
 
 // getAll Case From Firm
 
-router.get("/getAllFirmCases", requireAuth, getAllFirmCases);
+// router.get("/getAllFirmCases", requireAuth, getAllFirmCases);
 
 // get ecourt cause list
 

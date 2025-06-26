@@ -16,6 +16,11 @@ const mappingSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Advocate",
   },
+  FirmOwner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "FirmOwner",
+    required: true,
+  },
   isActive: {
     type: Boolean,
     require: true,

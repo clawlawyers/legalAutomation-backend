@@ -85,6 +85,35 @@ const getAllClientCases = async (req, res) => {
   }
 };
 
+const getClientsToCase = async (req, res) => {
+  try {
+    const userId = req.user.user._id;
+    let clientCases;
+    if (req.user.type === "manager") {
+      clientCases = await Mapping.find({
+        case: req.params.caseId,
+        FirmOwner: userId,
+      })
+        .populate("client")
+        .exec();
+    } else {
+      clientCases = await Mapping.find({
+        case: req.params.caseId,
+        Advocate: userId,
+      })
+        .populate("client")
+        .exec();
+    }
+
+    const clients = clientCases.map((a) => a.client);
+
+    res.status(200).json(clients);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error adding client(s) to case", error });
+  }
+};
+
 const editClient = async (req, res) => {
   try {
     const { _id, clientName, email, phone, modeOfCommunication } = req.body;
@@ -125,4 +154,5 @@ module.exports = {
   getAllClientCases,
   editClient,
   deleteClient,
+  getClientsToCase,
 };

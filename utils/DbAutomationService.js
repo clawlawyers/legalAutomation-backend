@@ -12,7 +12,11 @@ const checkReminders = async () => {
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1); // exclusive range
 
-  const reminders = await Reminder.find({}).populate("client").populate("case");
+  const reminders = await Reminder.find({})
+    .populate("client")
+    .populate("case")
+    .populate("firmOwner")
+    .populate("advocate");
 
   for (const reminder of reminders) {
     const notifyDate = new Date(reminder.hearingDate);

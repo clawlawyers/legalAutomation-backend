@@ -7,6 +7,7 @@ const {
   getAllClientCases,
   editClient,
   deleteClient,
+  getClientsToCase,
 } = require("../controllers/clientController");
 const route = express.Router();
 
@@ -21,5 +22,7 @@ route.delete("/deleteClient/:clientId", requireAuth, deleteClient);
 route.post("/addClientToCase", requireAuth, addClientToCase);
 
 route.get("/getAllClientCases/:clientId", requireAuth, getAllClientCases);
+
+route.get("/getClientsToCase/:caseId", requireAuth, getClientsToCase);
 
 module.exports = route;
