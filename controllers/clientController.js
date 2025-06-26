@@ -1,18 +1,58 @@
 const Client = require("../models/client");
 const Mapping = require("../models/mapping");
+const Reminder = require("../models/reminders");
+
+// const getAllClients = async (req, res) => {
+//   try {
+//     let clients;
+
+//     if (req.user.type === "manager") {
+//       clients = await Client.find({ firmOwner: req.user.user._id });
+//     } else {
+//       clients = await Client.find({ firmOwner: req.user.user.FirmOwner });
+//     }
+
+//     res.status(200).json(clients);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching clients", error });
+//   }
+// };
 
 const getAllClients = async (req, res) => {
   try {
     let clients;
 
+    // Filter clients based on manager or not
     if (req.user.type === "manager") {
-      clients = await Client.find({ firmOwner: req.user.user._id });
+      clients = await Client.find({ firmOwner: req.user.user._id }).lean();
     } else {
-      clients = await Client.find({ firmOwner: req.user.user.FirmOwner });
+      clients = await Client.find({
+        firmOwner: req.user.user.FirmOwner,
+      }).lean();
     }
 
-    res.status(200).json(clients);
+    // Get all client IDs from above clients
+    const clientIds = clients.map((client) => client._id);
+
+    // Fetch reminders for these clients
+    const reminders = await Reminder.find(
+      { client: { $in: clientIds } },
+      "client"
+    ).lean();
+
+    const clientIdsWithAlerts = new Set(
+      reminders.map((r) => r.client.toString())
+    );
+
+    // Add `hasAlert` flag to each client
+    const clientsWithAlertStatus = clients.map((client) => ({
+      ...client,
+      hasAlert: clientIdsWithAlerts.has(client._id.toString()),
+    }));
+
+    res.status(200).json(clientsWithAlertStatus);
   } catch (error) {
+    console.error("Error fetching clients with alerts:", error);
     res.status(500).json({ message: "Error fetching clients", error });
   }
 };
