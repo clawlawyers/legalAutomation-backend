@@ -1,11 +1,11 @@
 const fetchEhanceWithAI = async (payload) => {
   try {
+    const form = new FormData();
+    form.append("text", payload.text);
+    form.append("state", payload.state);
     const getCase = await fetch(" http://74.225.162.118:8000/text-enhance/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      body: form,
     });
     console.log(getCase);
     if (!getCase.ok) {
