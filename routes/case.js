@@ -20,6 +20,8 @@ const {
   caseFindByPromptSummary,
   getAllFirmCases,
   getEcourtCauseList,
+  scrapOrders,
+  getOrderPdf,
 } = require("../controllers/caseController");
 const router = express.Router();
 
@@ -80,5 +82,13 @@ router.post("/caseSearch/summary", caseFindByPromptSummary);
 // get ecourt cause list
 
 router.post("/ecourt-causeList", requireAuth, getEcourtCauseList);
+
+// scrap orders
+
+router.post("/scrapOrders", requireAuth, scrapOrders);
+
+// get Order pdf
+
+router.post("/getOrderPdf", requireAuth, getOrderPdf);
 
 module.exports = router;

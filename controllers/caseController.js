@@ -14,7 +14,9 @@ const getCaseByCNR = async (cnr_number, caseType) => {
   try {
     let URL;
     if (caseType == "DC") {
-      URL = "https://1f7som46sg.execute-api.ap-south-1.amazonaws.com/cnr/";
+      // URL = "https://1f7som46sg.execute-api.ap-south-1.amazonaws.com/cnr/";
+      URL =
+        "https://1i4lw1eau3.execute-api.ap-south-1.amazonaws.com/cnr_for_causelist_district_court/";
     } else if (caseType === "HC") {
       URL =
         "https://4ej2c7o90d.execute-api.ap-south-1.amazonaws.com/case_service/";
@@ -1063,6 +1065,82 @@ const getEcourtCauseList = async (req, res) => {
   }
 };
 
+const fetchScrapOrders = async (caseType, payload) => {
+  try {
+    let URL;
+    if (caseType === "DC") {
+      URL = "http://20.33.87.15:8000/extract";
+    } else if (caseType === "HC") {
+      URL = "http://20.33.87.15:5000/extract";
+    }
+    getCases = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    if (!getCases.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await getCases.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const scrapOrders = async (req, res) => {
+  try {
+    const caseData = req.body.caseData;
+    const caseType = req.body.caseType;
+    console.log(caseType);
+    const data = await fetchScrapOrders(caseType, caseData);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const fetchOrderPdf = async (caseType, payload) => {
+  try {
+    let URL;
+    if (caseType === "DC") {
+      URL = "http://20.33.87.15:8000/signed_url";
+    } else if (caseType === "HC") {
+      URL = "http://20.33.87.15:5000/signed_url";
+    }
+    getCases = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    console.log(getCases);
+    if (!getCases.ok) {
+      throw new Error("Network response was not ok");
+    }
+    const data = await getCases.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const getOrderPdf = async (req, res) => {
+  try {
+    const payload = req.body.caseData;
+    const caseType = req.body.caseType;
+    const data = await fetchOrderPdf(caseType, payload);
+    res.status(200).json(data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   caseFindByCNR,
   caseFindByFilingNum,
@@ -1083,4 +1161,6 @@ module.exports = {
   caseFindByPromptSummary,
   // getAllFirmCases,
   getEcourtCauseList,
+  scrapOrders,
+  getOrderPdf,
 };

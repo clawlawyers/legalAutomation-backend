@@ -17,6 +17,7 @@ const advocateSchema = new mongoose.Schema({
   state: {
     type: String,
     required: true,
+    default: "Uttar Pradesh",
   },
   email: {
     type: String,

@@ -27,6 +27,7 @@ const firmOwnerSchema = new Schema(
     state: {
       type: String,
       required: true,
+      default: "Uttar Pradesh",
     },
     courtOfPractice: {
       type: String,

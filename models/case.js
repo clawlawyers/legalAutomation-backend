@@ -218,12 +218,12 @@ const caseSchema = new mongoose.Schema({
         // required: true,
         default: "",
       },
-      businessOnDate: {
-        // This is inconsistent with the rest of the schema, so it's commented out
-        type: String,
-        // required: true,
-        default: "",
-      },
+      // businessOnDate: {
+      //   // This is inconsistent with the rest of the schema, so it's commented out
+      //   type: String,
+      //   // required: true,
+      //   default: "",
+      // },
       purposeOfHearing: {
         type: String,
         // required: true,
@@ -233,6 +233,48 @@ const caseSchema = new mongoose.Schema({
         type: String,
         // required: true,
         default: "",
+      },
+      order: {
+        orderNumber: {
+          type: String,
+          // required: true,
+          default: "",
+        },
+        orderOn: {
+          type: String,
+          // required: true,
+          default: "",
+        },
+        judge: {
+          type: String,
+          // required: true,
+          default: "",
+        },
+        orderDate: {
+          type: String,
+          // required: true,
+          default: "",
+        },
+        orderDetails: {
+          type: String,
+          // required: true,
+          default: "",
+        },
+        filename: {
+          type: String,
+          // required: true,
+          default: "",
+        },
+        date: {
+          type: String,
+          // required: true,
+          default: "",
+        },
+        type: {
+          type: String,
+          // required: true,
+          default: "",
+        },
       },
     },
   ],

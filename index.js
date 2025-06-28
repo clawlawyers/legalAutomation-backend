@@ -9,7 +9,10 @@ app.use(cors());
 app.use(express.json());
 
 const routes = require("./routes/route");
-const { checkReminders } = require("./utils/DbAutomationService");
+const {
+  checkReminders,
+  sendNextHeringReminders,
+} = require("./utils/DbAutomationService");
 app.use("/api", routes);
 
 app.post("/api/checkDate", async (req, res) => {
@@ -41,12 +44,21 @@ cron.schedule(
   async () => {
     console.log("✅ Running daily reminder check at 8 AM");
     await checkReminders();
+    await sendNextHeringReminders();
   },
   {
     scheduled: true,
     timezone: "Asia/Kolkata", // Indian Standard Time
   }
 );
+
+// Run it immediately once For testing
+// (async () => {
+//   console.log("⚡ Running reminder check immediately");
+//   await checkReminders();
+
+//   await sendNextHeringReminders();
+// })();
 
 app.listen(8889, () => {
   console.log("server is runing at port 8889");

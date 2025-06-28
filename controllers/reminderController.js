@@ -92,10 +92,12 @@ const addReminder = async (req, res) => {
 
     console.log(req.body);
 
-    const Heardate =
-      typeof hearingDate === "string"
-        ? parseDateString(hearingDate)
-        : hearingDate;
+    // const Heardate =
+    //   typeof hearingDate === "string"
+    //     ? parseDateString(hearingDate)
+    //     : hearingDate;
+
+    const Heardate = hearingDate;
 
     const reminders = [];
 
