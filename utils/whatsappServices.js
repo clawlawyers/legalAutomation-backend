@@ -27,6 +27,8 @@ const sendWhatsAppMessage = async ({
     throw new Error("Missing or invalid required parameters");
   }
 
+  console.log(data);
+
   const formData = new FormData();
   formData.append("authToken", process.env.ELEVENZA_AUTH_TOKEN);
   formData.append("sendto", phone);
@@ -50,7 +52,7 @@ const sendWhatsAppMessage = async ({
         formData,
         {
           headers: formData.getHeaders(),
-          timeout: 30000, // 30 sec timeout
+          timeout: 60000, // 30 sec timeout
         }
       );
 

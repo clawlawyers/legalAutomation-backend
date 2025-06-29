@@ -207,3 +207,202 @@ exports.sendCaseEmailToAdvocate = async (toEmail, caseData) => {
 
   return transporter.sendMail(mailOptions);
 };
+
+const htmlTemplateForUpcomingHearingDetails = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hearing Update</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        line-height: 1.6;
+        background-color: #f9f9f9;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .header {
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
+      .section-title {
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-decoration: underline;
+      }
+      .footer {
+        margin-top: 30px;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p>Dear {{clientName}},</p>
+
+      <p>
+        I am writing to provide you with an update regarding the hearing for
+        <strong>Case Number: {{caseNum}}</strong> held on
+        <strong>Date: {{hearingDate}}</strong> at
+        <strong>Court Name: {{courtName}}</strong>. Please find below the
+        detailed summary of the proceedings.
+      </p>
+
+      <div class="section-title">Hearing Details:</div>
+      <p><strong>Advocate:</strong> ADV. {{advocateName}}</p>
+      <p><strong>Case Number:</strong> {{caseNum}}</p>
+      <p><strong>Hearing Date:</strong> {{hearingDate}}</p>
+      <p><strong>Court:</strong> {{courtName}}</p>
+
+
+      <div class="section-title">Message From Advocate:</div>
+      <p>
+        "The hearing was conducted. The matter was taken up for {{advocateMessage}}. 
+        The court has heard the submissions and the matter
+        has been posted."
+      </p>
+
+      <p class="footer">
+        If you have any questions or need clarification regarding this update,
+        feel free to get in touch.
+      </p>
+
+      <p>Best Regards,<br />ADV. {{advocateName}}</p>
+    </div>
+  </body>
+</html>
+`;
+
+//  requiredObj={
+//   advocateName: "",
+//   clientName: "",
+//   caseNum: "",
+//   hearingDate: "",
+//   courtName: "",
+//   advocateMessage: "",
+//  }
+exports.sendCaseEmailToClientHearingDetails = async (toEmail, caseData) => {
+  const templateForPlan = handlebars.compile(
+    htmlTemplateForUpcomingHearingDetails
+  );
+
+  const htmlContent = templateForPlan(caseData);
+
+  const mailOptions = {
+    from: `"ADV.${caseData.advocateName} " <no-reply@clawlegaltech.com>`,
+    to: toEmail,
+    subject: `Hearing Update - Case Number ${caseData.caseNum}`,
+    html: htmlContent, // send HTML template here
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
+const htmlTemplateForUpcomingPaymentReminder = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Invoice for Hearing</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        line-height: 1.6;
+        background-color: #f9f9f9;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+      .section-title {
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        text-decoration: underline;
+      }
+      .footer {
+        margin-top: 30px;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p>Dear {{clientName}},</p>
+
+      <p>I hope you are doing well.</p>
+
+      <p>
+        This is to inform you that the hearing for
+        <strong>Case Number: {{caseNum}}</strong> was successfully attended on
+        <strong>Date: {{hearingDate}}</strong> at
+        <strong>Court Name: {{courtName}}</strong>. Kindly find below the
+        details of the professional fee applicable for the hearing.
+      </p>
+
+      <div class="section-title">Invoice Details:</div>
+      <p><strong>Advocate:</strong> ADV. {{advocateName}}</p>
+      <p><strong>Case Number:</strong> {{caseNum}}</p>
+      <p><strong>Hearing Date:</strong> {{hearingDate}}</p>
+      <p><strong>Court:</strong> {{courtName}}</p>
+      <p><strong>Professional Fee for the Hearing:</strong> ₹{{totalAmount}}/-</p>
+      <p><strong>Current Due Amount:</strong> ₹{{dueAmount}}/-</p>
+
+      <div class="section-title">Terms:</div>
+      <p>
+        The mentioned fee covers only the hearing held on <strong>{{hearingDate}}</strong>.
+        Any future hearings, filings, or additional legal services will be billed
+        separately as per mutually agreed terms.
+      </p>
+      <p>Kindly complete the payment before the next hearing date for this case.</p>
+
+      <p class="footer">
+        Best Regards,<br />
+        ADV. {{advocateName}}
+      </p>
+    </div>
+  </body>
+</html>
+`;
+
+// requiredObj = {
+//   advocateName: "",
+//   clientName: "",
+//   caseNum: "",
+//   hearingDate: "",
+//   courtName: "",
+//   totalAmount: "",
+//   dueAmount: "",
+// }
+exports.sendCaseEmailToClientPaymentReminder = async (toEmail, caseData) => {
+  const templateForPlan = handlebars.compile(
+    htmlTemplateForUpcomingPaymentReminder
+  );
+
+  const htmlContent = templateForPlan(caseData);
+
+  const mailOptions = {
+    from: `"ADV.${caseData.advocateName} " <no-reply@clawlegaltech.com>`,
+    to: toEmail,
+    subject: `Invoice for Hearing - Case Number ${caseData.caseNum}`,
+    html: htmlContent, // send HTML template here
+  };
+
+  return transporter.sendMail(mailOptions);
+};

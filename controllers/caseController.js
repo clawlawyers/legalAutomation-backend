@@ -1,6 +1,7 @@
 const Case = require("../models/case");
 const Counter = require("../models/Counter");
 const Mapping = require("../models/mapping");
+const axios = require("axios");
 
 const {
   parseCaseDetailsDC,
@@ -11,33 +12,32 @@ const {
 
 // Find case by CNR number
 const getCaseByCNR = async (cnr_number, caseType) => {
+  console.log(cnr_number);
   try {
     let URL;
-    if (caseType == "DC") {
-      // URL = "https://1f7som46sg.execute-api.ap-south-1.amazonaws.com/cnr/";
+    if (caseType === "DC") {
       URL =
         "https://1i4lw1eau3.execute-api.ap-south-1.amazonaws.com/cnr_for_causelist_district_court/";
     } else if (caseType === "HC") {
       URL =
         "https://4ej2c7o90d.execute-api.ap-south-1.amazonaws.com/case_service/";
     }
-    const getCase = await fetch(URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ cnr_number }),
-    });
-    console.log(getCase);
-    if (!getCase.ok) {
-      throw new Error("Network response was not ok");
-    }
 
-    const data = await getCase.json();
-    console.log(data);
-    return data;
+    const response = await axios.post(
+      URL,
+      { cnr_number },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 60000, // 60 seconds (1 minute) timeout
+      }
+    );
+
+    console.log(response.data);
+    return response.data;
   } catch (error) {
-    console.log(error);
+    console.log("Axios error:", error?.message || error);
     return null;
   }
 };

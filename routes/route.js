@@ -9,6 +9,7 @@ const causeListRoute = require("./causeList");
 const reminderRoute = require("./reminder");
 const paymentRoute = require("./payment");
 const ai = require("./ai");
+const alert = require("./alert");
 
 router.use("/auth", authRoute);
 router.use("/case", caseRoute);
@@ -18,5 +19,6 @@ router.use("/causeList", causeListRoute);
 router.use("/reminder", reminderRoute);
 router.use("/payment", paymentRoute);
 router.use("/ai", ai);
+router.use("/alert", alert);
 
 module.exports = router;
